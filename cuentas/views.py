@@ -5,11 +5,14 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from logs.models import OperationLog
+
+
 # Create your views here.
 @login_required
 def index(request):
     balance_list = [c.monto for c in
-                    Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO, propietario=request.user)]
+                    Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO,
+                                                           propietario=request.user)]
     balance_list.append(0)
     balance = reduce(lambda a, b: a + b, balance_list)
 
@@ -45,12 +48,12 @@ class CuentaView(View):
         tipo = request.POST.get("tipo_cuenta")
 
         cuenta = Cuenta.objects.using('default').create(
-            nombre = nombre,
-            tipo = Cuenta.TipoCuenta(tipo),
-            propietario = user,
+            nombre=nombre,
+            tipo=Cuenta.TipoCuenta(tipo),
+            propietario=user,
         )
 
-        cuenta.save
+        cuenta.save()
 
         OperationLog.objects.using('logsdb').create(
             user_id=user.id,
