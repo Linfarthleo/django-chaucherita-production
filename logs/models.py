@@ -7,11 +7,12 @@ from django.contrib.auth.models import User
 
 from django.db import models
 
+
 class OperationLog(models.Model):
     OPERATION_CHOICES = (
-         ('Create', 'Create'),
-         ('Update', 'Update'),
-         ('Delete', 'Delete'),
+        ('Create', 'Create'),
+        ('Update', 'Update'),
+        ('Delete', 'Delete'),
     )
 
     user_id = models.IntegerField(default=0)  # Valor predeterminado para user_id
@@ -20,12 +21,12 @@ class OperationLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-         return f"{self.timestamp} - {self.operation} by {self.user_username}"
+        return f"{self.timestamp} - {self.operation} by {self.user_username}"
 
 
 class SessionLog(models.Model):
-    user_id = models.IntegerField(default=0) 
-    user_username = models.CharField(max_length=150, default="")  
+    user_id = models.IntegerField(default=0)
+    user_username = models.CharField(max_length=150, default="")
     login_time = models.DateTimeField(auto_now_add=True)
     logout_time = models.DateTimeField(null=True, blank=True)
 
