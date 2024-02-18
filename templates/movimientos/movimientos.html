@@ -1,0 +1,90 @@
+{% extends "header.html" %}
+{% block title%}Movimientos - {% endblock %}
+{% block content%}
+{{ block.super }}
+<main class="container">
+    <h1 class="mt-4"><i class="fa-solid fa-money-bill-transfer"></i> Movimientos</h1>
+    <div class="d-flex gap-3 mb-3">
+        <a href="/movimientos?op=gasto">
+            <button class="btn btn-outline-warning">
+                Registrar gasto
+            </button>
+        </a>
+        <a href="/movimientos?op=ingreso">
+            <button class="btn btn-outline-success">
+                Registrar ingreso
+            </button>
+        </a>
+        <a href="/movimientos?op=traspaso">
+            <button class="btn btn-outline-primary">
+                Registrar traspaso
+            </button>
+        </a>
+
+        {% if op %}
+
+        <a href="/movimientos/">
+            <button class="btn btn-outline-danger">
+                Cancelar
+            </button>
+        </a>
+
+        {% endif %}
+    </div>
+    {% if op %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-floating mb-3">
+            <select name="cuenta_origen" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                {% for cuenta in cuentas_origen %}
+                    <option value="{{ cuenta.id }}">{{ cuenta.nombre }}</option>
+                {% endfor %}
+            </select>
+            <label for="floatingSelect">Cuenta de origen</label>
+        </div>
+        <div class="form-floating mb-3">
+            <select name="cuenta_destino" class="form-select" id="floatingSelect2" aria-label="Floating label select example">
+                {% for cuenta in cuentas_destino %}
+                    <option value="{{ cuenta.id }}">{{ cuenta.nombre }}</option>
+                {% endfor %}
+            </select>
+            <label for="floatingSelect2">Cuenta de destino</label>
+        </div>
+        <div class="mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="monto" name="monto" aria-describedby="emailHelp" required placeholder="Ej: 250">
+        </div>
+        <div class="mb-3">
+            <label for="concepto" class="form-label">Concepto</label>
+            <textarea class="form-control" id="concepto" name="concepto" aria-describedby="emailHelp" required placeholder="Ej: Paso entre cuentas"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha</label>
+            <input type="date" class="form-control" id="fecha" name="fecha" aria-describedby="emailHelp" required>
+        </div>
+        <button class="btn btn-primary" type="submit">
+            Realizar movimiento
+        </button>
+    </form>
+    {% endif %}
+    <h3 class="mt-4"><i class="fa-solid fa-file-invoice"></i> Lista de movimientos</h3>
+    <div class="d-flex flex-column">
+        
+        {% for movimiento in movimientos %}
+        <div class="d-flex flex-column my-2 border border-light-emphasis rounded-2 p-2">
+            <div class="d-flex justify-content-between">
+                <span class=""> Desde <strong>{{ movimiento.origen.nombre }}</strong> hacia <strong>{{ movimiento.destino.nombre }}</strong> el {{ movimiento.fecha }}</span>
+                <span class="badge bg-success fs-6">
+                    ${{ movimiento.monto }}
+                </span>
+            </div>
+            <div>
+                {{ movimiento.concepto }}
+            </div>
+        </div>
+        {% empty %}
+            <p>Todavía no hay movimientos</p>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

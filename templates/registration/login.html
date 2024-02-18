@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title%}Login - {% endblock %}
+{% block head %}
+    <style>
+        .floating {
+            width: 400px;
+        }
+
+        img {
+            min-width: 300px;
+            max-width: 500px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<main class="container min-vw-100 min-vh-100 d-flex justify-content-center align-items-center flex-column gap-2 flex-md-row">
+        <img src="{% static 'svg/user.svg' %}" alt="" class="w-50">
+        <form action="" method="post" class="floating" id="loginForm">
+            <h1 class="text-center">Mi Chaucherita Web</h1>
+            <p class="w-100 text-center">Sistema de gestión de gastos personales</p>
+            {% csrf_token %}
+            {% if form.errors %}
+                <div id="loginError" class="form-text text-danger text-center">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Usuario y/o contraseña incorrectos
+                </div>
+            {% endif %}
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"><i class="fa-solid fa-user"></i> Nombre de usuario</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" name="username" aria-describedby="emailHelp" required placeholder="Ingresa tu usuario">
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label"><i class="fa-solid fa-key"></i> Contraseña</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword1" required placeholder="Ingresa tu contraseña">
+              </div>
+              <button type="submit" class="btn btn-primary">Ingresar</button>
+        </form>
+</main>
+{% endblock %}
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        var usernameInput = document.getElementById('exampleInputEmail1').value;
+        var passwordInput = document.getElementById('exampleInputPassword1').value;
+        var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
+
+        if (!emailRegex.test(usernameInput)) {
+            event.preventDefault(); 
+            document.getElementById('loginError').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Credenciales inválidas';
+            return;
+        }
+
+        var passwordRegex = /^[a-zA-Z0-9]+$/;
+
+        if (!passwordRegex.test(passwordInput)) {
+            event.preventDefault(); 
+            document.getElementById('loginError').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula y un número';
+            return;
+        }
+    });
+</script>

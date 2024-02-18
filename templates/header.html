@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title%}{% endblock %}
+{% block content%}
+    <header class="">
+        <nav class="navbar navbar-expand-lg bg-dark fixed-top" data-bs-theme="dark">
+            <div class="container-fluid">
+              <a class="navbar-brand align-items-center d-flex" href="/"><img src="{% static 'favicon.ico' %}" style="width: 28px; height: 28px;"/> <p class="m-0 ms-1">Mi chaucherita web</p></a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link {% if seleccion == 'index' %}active{% endif %}" aria-current="page" href="/">Inicio</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link {% if seleccion == 'cuenta' %}active{% endif %}" href="/cuentas">Cuentas</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link {% if seleccion == 'movimiento' %}active{% endif %}" href="/movimientos">Movimientos</a>
+                  </li>
+                    {% if user.is_staff %}
+                    <li> 
+                        <a class="nav-link {% if seleccion == 'movimiento' %}active{% endif %}" href="/admin">Admin</a>
+                    </li>
+                {% endif %}
+                  <li class="nav-item">
+                    <form action="/accounts/logout/" class="form" method="post">
+                      {% csrf_token %}
+                      <button class="btn btn-dark"><i class="fa-solid fa-arrow-right-from-bracket"></i> Salir</button>
+                    </form>
+                  </li>          
+                </ul>
+              </div>
+            </div>
+          </nav>
+    </header>
+    <div class="mt-5 text-transparent">.</div>
+{% endblock %}
