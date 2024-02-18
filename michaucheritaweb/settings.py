@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whiteNoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'michaucheritaweb.urls'
@@ -138,7 +138,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STOREAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
