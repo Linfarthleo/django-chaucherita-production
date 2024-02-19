@@ -137,7 +137,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 if not DEBUG:
+    # Directorio donde se recopilarán los archivos estáticos durante la fase de producción
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+    # Almacenamiento de archivos estáticos para producción
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
