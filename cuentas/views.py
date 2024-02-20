@@ -10,8 +10,8 @@ from logs.models import OperationLog
 
 
 # Create your views here.
-@login_required
 @require_http_methods(["GET"])
+@login_required
 def index(request):
     balance_list = [c.monto for c in
                     Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO,
@@ -28,11 +28,10 @@ def index(request):
     })
 
 
-@method_decorator(login_required, name='dispatch')
 @require_http_methods(["GET", "POST"])
+@method_decorator(login_required, name='dispatch')
 class CuentaView(View):
 
-    @require_GET
     def get(self, request):
         op = request.GET.get("op", "")
         context = {
@@ -46,7 +45,6 @@ class CuentaView(View):
 
         return render(request, "cuentas/cuentas.html", context=context)
 
-    @require_POST
     def post(self, request):
         user = request.user
         print(request.user)
@@ -70,11 +68,10 @@ class CuentaView(View):
         return redirect("/cuentas")
 
 
-@method_decorator(login_required, name='dispatch')
 @require_http_methods(["GET", "POST"])
+@method_decorator(login_required, name='dispatch')
 class MovimientoView(View):
 
-    @require_GET
     def get(self, request):
 
         op = request.GET.get("op", "")
@@ -100,7 +97,6 @@ class MovimientoView(View):
 
         return render(request, "movimientos/movimientos.html", context=context)
 
-    @require_POST
     def post(self, request):
         user = request.user
         cuenta_origen = request.POST.get("cuenta_origen")
