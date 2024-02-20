@@ -16,21 +16,17 @@
     <div class="my-2">
         <h1 class="mt-3">Creación de nueva cuenta</h1>
     <form action="/cuentas/" method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label" required>Nombre de cuenta</label>
-            <input type="text" class="form-control" id="exampleInputEmail1" name="nombre_cuenta" aria-describedby="emailHelp" required placeholder="Ingresa el nombre de la cuenta">
-        </div>
-        <div class="form-floating mb-3">
-            <select name="tipo_cuenta" class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                {% for value, display in tipos_cuenta %}
-                    <option value="{{ value }}">{{ display }}</option>
-                {% endfor %}
-            </select>
-            <label for="floatingSelect">Tipo de cuenta</label>
-        </div>
-          <button type="submit" class="btn btn-primary">Guardar</button>
-    </form>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field.errors }}
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}            
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
     {% endif %}
     </div>
     <div class="mt-4 d-flex flex-column">

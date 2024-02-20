@@ -11,7 +11,7 @@ class Cuenta(models.Model):
         INGRESO = 'I', 'Ingreso'
         GASTO = 'E', 'Gasto'
 
-    nombre = models.CharField(max_length=60)
+    nombre = models.CharField(max_length=30)
     monto = models.FloatField(default=0.0)
     tipo = models.CharField(max_length=3, default=TipoCuenta.INGRESO_EGRESO, choices=TipoCuenta.choices)
     propietario = models.ForeignKey(User, on_delete=models.CASCADE)

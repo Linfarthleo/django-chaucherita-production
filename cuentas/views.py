@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
+
+from .forms import CrearCuentaForm
 from .models import Cuenta, Transaccion
 from functools import reduce
 from logs.models import OperationLog
@@ -27,36 +29,36 @@ def index(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def cuenta_view(request):
-    op = request.GET.get("op", "")
+    form = CrearCuentaForm()
+
+    if request.method == "POST":
+        form = CrearCuentaForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            nombre = form.cleaned_data.get("nombre_cuenta")
+            tipo = form.cleaned_data.get("tipo_cuenta")
+
+            cuenta = Cuenta.objects.using('default').create(
+                nombre=nombre,
+                tipo=Cuenta.TipoCuenta(tipo),
+                propietario=user,
+            )
+
+            cuenta.save()
+
+            OperationLog.objects.using('logsdb').create(
+                user_id=user.id,
+                user_username=user.username,
+                operation="Nueva cuenta. ID: " + str(cuenta.id)
+            )
+
+            return redirect("/cuentas")
+
     context = {
-        "op": op,
+        "form": form,
         "cuentas": Cuenta.objects.using('default').filter(propietario=request.user),
         "seleccion": "cuenta"
     }
-
-    if op == "crear":
-        context["tipos_cuenta"] = Cuenta.TipoCuenta.choices
-
-    if request.method == "POST":
-        user = request.user
-        nombre = request.POST.get("nombre_cuenta")
-        tipo = request.POST.get("tipo_cuenta")
-
-        cuenta = Cuenta.objects.using('default').create(
-            nombre=nombre,
-            tipo=Cuenta.TipoCuenta(tipo),
-            propietario=user,
-        )
-
-        cuenta.save()
-
-        OperationLog.objects.using('logsdb').create(
-            user_id=user.id,
-            user_username=user.username,
-            operation="Nueva cuenta. ID: " + str(cuenta.id)
-        )
-
-        return redirect("/cuentas")
 
     return render(request, "cuentas/cuentas.html", context=context)
 
