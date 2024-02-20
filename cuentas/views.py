@@ -30,6 +30,7 @@ def index(request):
 @require_http_methods(["GET", "POST"])
 def cuenta_view(request):
     form = CrearCuentaForm()
+    op = request.GET.get("op")
 
     if request.method == "POST":
         form = CrearCuentaForm(request.POST)
@@ -57,7 +58,8 @@ def cuenta_view(request):
     context = {
         "form": form,
         "cuentas": Cuenta.objects.using('default').filter(propietario=request.user),
-        "seleccion": "cuenta"
+        "seleccion": "cuenta",
+        "op": op,
     }
 
     return render(request, "cuentas/cuentas.html", context=context)
