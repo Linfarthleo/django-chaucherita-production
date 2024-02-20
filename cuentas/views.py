@@ -1,17 +1,13 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods, require_GET, require_POST
-
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from .models import Cuenta, Transaccion
 from functools import reduce
-from django.views import View
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from logs.models import OperationLog
 
 
-# Create your views here.
-@require_http_methods(["GET"])
 @login_required
+@require_GET
 def index(request):
     balance_list = [c.monto for c in
                     Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO,
@@ -28,27 +24,21 @@ def index(request):
     })
 
 
-@method_decorator(login_required, name='dispatch')
-class CuentaView(View):
+@login_required
+@require_http_methods(["GET", "POST"])
+def cuenta_view(request):
+    op = request.GET.get("op", "")
+    context = {
+        "op": op,
+        "cuentas": Cuenta.objects.using('default').filter(propietario=request.user),
+        "seleccion": "cuenta"
+    }
 
-    @require_GET
-    def get(self, request):
-        op = request.GET.get("op", "")
-        context = {
-            "op": op,
-            "cuentas": Cuenta.objects.using('default').filter(propietario=request.user),
-            "seleccion": "cuenta"
-        }
+    if op == "crear":
+        context["tipos_cuenta"] = Cuenta.TipoCuenta.choices
 
-        if op == "crear":
-            context["tipos_cuenta"] = Cuenta.TipoCuenta.choices
-
-        return render(request, "cuentas/cuentas.html", context=context)
-
-    @require_POST
-    def post(self, request):
+    if request.method == "POST":
         user = request.user
-        print(request.user)
         nombre = request.POST.get("nombre_cuenta")
         tipo = request.POST.get("tipo_cuenta")
 
@@ -68,39 +58,34 @@ class CuentaView(View):
 
         return redirect("/cuentas")
 
-
-@method_decorator(login_required, name='dispatch')
-class MovimientoView(View):
+    return render(request, "cuentas/cuentas.html", context=context)
 
 
-    def get(self, request):
+@login_required
+@require_http_methods(["GET", "POST"])
+def movimiento_view(request):
+    op = request.GET.get("op", "")
+    user = request.user
 
-        op = request.GET.get("op", "")
-        user = request.user
+    context = {
+        "op": op,
+        "movimientos": Transaccion.objects.using('default').filter(origen__propietario__id=user.id),
+        "seleccion": "movimiento"
+    }
 
-        context = {
-            "op": op,
-            "movimientos": Transaccion.objects.using('default').filter(origen__propietario__id=user.id),
-            "seleccion": "movimiento"
-        }
+    if op == "ingreso":
+        context["cuentas_origen"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO)
+        context["cuentas_destino"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
 
-        if op == "ingreso":
-            context["cuentas_origen"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO)
-            context["cuentas_destino"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+    if op == "gasto":
+        context["cuentas_origen"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+        context["cuentas_destino"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.GASTO)
 
-        if op == "gasto":
-            context["cuentas_origen"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
-            context["cuentas_destino"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.GASTO)
+    if op == "traspaso":
+        context["cuentas_origen"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+        context["cuentas_destino"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
 
-        if op == "traspaso":
-            context["cuentas_origen"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
-            context["cuentas_destino"] = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
-
-        return render(request, "movimientos/movimientos.html", context=context)
-
-
-    def post(self, request):
-        user = request.user
+    if request.method == "POST":
         cuenta_origen = request.POST.get("cuenta_origen")
         cuenta_destino = request.POST.get("cuenta_destino")
         monto = request.POST.get("monto")
@@ -126,3 +111,5 @@ class MovimientoView(View):
         )
 
         return redirect("/movimientos")
+
+    return render(request, "movimientos/movimientos.html", context=context)
