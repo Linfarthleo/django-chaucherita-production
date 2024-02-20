@@ -31,7 +31,7 @@ def index(request):
 @method_decorator(login_required, name='dispatch')
 class CuentaView(View):
 
-    #@require_http_methods(["GET"])
+    @require_GET
     def get(self, request):
         op = request.GET.get("op", "")
         context = {
@@ -45,7 +45,7 @@ class CuentaView(View):
 
         return render(request, "cuentas/cuentas.html", context=context)
 
-    @require_http_methods(["POST"])
+    @require_POST
     def post(self, request):
         user = request.user
         print(request.user)
@@ -72,7 +72,7 @@ class CuentaView(View):
 @method_decorator(login_required, name='dispatch')
 class MovimientoView(View):
 
-    #@require_http_methods(["GET"])
+
     def get(self, request):
 
         op = request.GET.get("op", "")
@@ -98,7 +98,7 @@ class MovimientoView(View):
 
         return render(request, "movimientos/movimientos.html", context=context)
 
-    @require_http_methods(["POST"])
+
     def post(self, request):
         user = request.user
         cuenta_origen = request.POST.get("cuenta_origen")
