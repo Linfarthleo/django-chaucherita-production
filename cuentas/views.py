@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_GET, require_POST
 
 from .models import Cuenta, Transaccion
 from functools import reduce
@@ -29,9 +29,10 @@ def index(request):
 
 
 @method_decorator(login_required, name='dispatch')
+@require_http_methods(["GET", "POST"])
 class CuentaView(View):
 
-    @require_http_methods(["GET"])
+    @require_GET
     def get(self, request):
         op = request.GET.get("op", "")
         context = {
@@ -45,7 +46,7 @@ class CuentaView(View):
 
         return render(request, "cuentas/cuentas.html", context=context)
 
-    @require_http_methods(["POST"])
+    @require_POST
     def post(self, request):
         user = request.user
         print(request.user)
@@ -70,9 +71,10 @@ class CuentaView(View):
 
 
 @method_decorator(login_required, name='dispatch')
+@require_http_methods(["GET", "POST"])
 class MovimientoView(View):
 
-    @require_http_methods(["GET"])
+    @require_GET
     def get(self, request):
 
         op = request.GET.get("op", "")
@@ -98,7 +100,7 @@ class MovimientoView(View):
 
         return render(request, "movimientos/movimientos.html", context=context)
 
-    @require_http_methods(["POST"])
+    @require_POST
     def post(self, request):
         user = request.user
         cuenta_origen = request.POST.get("cuenta_origen")
