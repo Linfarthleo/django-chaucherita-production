@@ -31,7 +31,7 @@ def index(request):
 @method_decorator(login_required, name='dispatch')
 class CuentaView(View):
 
-    @require_http_methods(["GET"])
+    #@require_http_methods(["GET"])
     def get(self, request):
         op = request.GET.get("op", "")
         context = {
@@ -72,7 +72,7 @@ class CuentaView(View):
 @method_decorator(login_required, name='dispatch')
 class MovimientoView(View):
 
-    @require_http_methods(["GET"])
+    #@require_http_methods(["GET"])
     def get(self, request):
 
         op = request.GET.get("op", "")
