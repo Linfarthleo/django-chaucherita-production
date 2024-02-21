@@ -89,14 +89,10 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL')
         ),
-    'logsdb': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'logs_db.sqlite3',
-    
-    }
+    'logsdb': dj_database_url.config(
+        default=os.environ.get('LOGS_DATABASE_URL')
+        )
 }
-
-
 
 
 # Password validation
