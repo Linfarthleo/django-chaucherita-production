@@ -20,13 +20,17 @@
             {{ form.non_field_errors }}
             {% for field in form %}
                 <div class="mb-3">
-                    {{ field.errors }}
                     {{ field.label_tag }}
                     {{ field }}
                 </div>
             {% endfor %}            
             <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
+    {% endif %}
+    {% if message %}
+        {% if message|length > 0 %}
+            <p style="font-weight: bold; color: red;">{{ message }}</p>
+        {% endif %}
     {% endif %}
     </div>
     <div class="mt-4 d-flex flex-column">
