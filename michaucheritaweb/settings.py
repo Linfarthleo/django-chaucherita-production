@@ -89,9 +89,7 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL')
         ),
-    'logsdb': dj_database_url.config(
-        default=os.environ.get('LOGS_DATABASE_URL')
-        )
+    'logsdb': dj_database_url.parse(os.environ.get('LOGS_DATABASE_URL'))
 }
 
 
