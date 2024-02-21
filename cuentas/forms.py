@@ -65,16 +65,3 @@ class MovimientoForm(forms.Form):
             raise forms.ValidationError('El monto debe ser un número mayor que cero')
         return monto
 
-    def clean(self):
-        cleaned_data = super().clean()
-        cuenta_origen_id = cleaned_data.get('cuenta_origen')
-        cuenta_destino_id = cleaned_data.get('cuenta_destino')
-
-        cuentas_origen_ids = [cuenta.id for cuenta in Cuenta.objects.all()]
-        cuentas_destino_ids = [cuenta.id for cuenta in Cuenta.objects.all()]
-
-        if cuenta_origen_id not in cuentas_origen_ids:
-            raise forms.ValidationError('La cuenta de origen no es válida')
-
-        if cuenta_destino_id not in cuentas_destino_ids:
-            raise forms.ValidationError('La cuenta de destino no es válida')
