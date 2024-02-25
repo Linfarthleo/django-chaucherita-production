@@ -1,7 +1,7 @@
 from django.utils import timezone
-from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.dispatch import receiver
-from .models import SessionLog
+from .models import SessionLog, InvalidLoginLog
 
 
 @receiver(user_logged_in)
@@ -15,3 +15,9 @@ def user_logged_out_handler(sender, request, user, **kwargs):
     last_session_log = SessionLog.objects.using('logsdb').filter(user_id=user.id).latest('login_time')
     last_session_log.logout_time = timezone.now()
     last_session_log.save()
+
+
+@receiver(user_login_failed)
+def user_login_failed_handler(sender, credentials, request, **kwargs):
+    invalid_login_log = InvalidLoginLog.objects.using('logsdb').create(user_username=credentials['username'], ip=request.META['REMOTE_ADDR'])
+    invalid_login_log.save()

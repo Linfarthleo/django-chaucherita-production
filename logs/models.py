@@ -32,3 +32,12 @@ class SessionLog(models.Model):
 
     def __str__(self):
         return f"User: {self.user_id}, Username: {self.user_username}, Login Time: {self.login_time}, Logout Time: {self.logout_time}"
+
+
+class InvalidLoginLog(models.Model):
+    user_username = models.CharField(max_length=150, default="")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    ip = models.GenericIPAddressField()
+
+    def __str__(self):
+        return f"Invalid login attempt for {self.user_username} at {self.timestamp}, IP: {self.ip}"
