@@ -22,7 +22,7 @@ def index(request):
     balance_list.append(0)
     balance = reduce(lambda a, b: a + b, balance_list)
 
-    cuentas = Cuenta.objects.using('default').filter(propietario=request.user)
+    cuentas = Cuenta.objects.filter(propietario=request.user)
     return render(request, "index.html", context={
         "balance": balance,
         "cuentas": cuentas,
@@ -51,7 +51,7 @@ def cuenta_view(request):
             nombre = escape(form.cleaned_data.get("nombre_cuenta"))
             tipo = escape(form.cleaned_data.get("tipo_cuenta"))
 
-            cuenta = Cuenta.objects.using('default').create(
+            cuenta = Cuenta.objects.create(
                 nombre=nombre,
                 tipo=Cuenta.TipoCuenta(tipo),
                 propietario=user,
@@ -71,7 +71,7 @@ def cuenta_view(request):
        
     context = {
         "form": form,
-        "cuentas": Cuenta.objects.using('default').filter(propietario=request.user),
+        "cuentas": Cuenta.objects.filter(propietario=request.user),
         "seleccion": "cuenta",
         "op": op,
         "message": escape(message)
@@ -85,7 +85,7 @@ def cuenta_view(request):
 def movimiento_view(request):
     op = request.GET.get("op", "")
     user = request.user
-    movimientos = Transaccion.objects.using('default').filter(origen__propietario__id=user.id)
+    movimientos = Transaccion.objects.filter(origen__propietario__id=user.id)
 
     if len(request.GET) > 0:
         if len(request.GET) != 1 or (not "op" in request.GET or request.GET["op"] not in ["ingreso", "gasto", "traspaso"]):
@@ -94,18 +94,18 @@ def movimiento_view(request):
     form = None
 
     if op == "ingreso":
-        cuentas_origen = Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO)
-        cuentas_destino = Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+        cuentas_origen = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO)
+        cuentas_destino = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
         form = MovimientoForm(cuentas_origen, cuentas_destino)
 
     elif op == "gasto":
-        cuentas_origen = Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
-        cuentas_destino = Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.GASTO)
+        cuentas_origen = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+        cuentas_destino = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.GASTO)
         form = MovimientoForm(cuentas_origen, cuentas_destino)
 
     elif op == "traspaso":
-        cuentas_origen = Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
-        cuentas_destino = Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+        cuentas_origen = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
+        cuentas_destino = Cuenta.objects.filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO)
         form = MovimientoForm(cuentas_origen, cuentas_destino)
 
     if request.method == "POST":
@@ -114,9 +114,9 @@ def movimiento_view(request):
             cleaned_data = form.cleaned_data
             origen_id = cleaned_data['cuenta_origen']
             destino_id = cleaned_data['cuenta_destino']
-            cuenta_origen = Cuenta.objects.using('default').get(pk=origen_id)
-            cuenta_destino = Cuenta.objects.using('default').get(pk=destino_id)
-            transaccion = Transaccion.objects.using('default').create(
+            cuenta_origen = Cuenta.objects.get(pk=origen_id)
+            cuenta_destino = Cuenta.objects.get(pk=destino_id)
+            transaccion = Transaccion.objects.create(
                 origen=cuenta_origen,
                 destino=cuenta_destino,
                 fecha=cleaned_data['fecha'],
@@ -131,7 +131,7 @@ def movimiento_view(request):
                 operation=f"Nueva transaccion. ID: {transaccion.id}"
             )
 
-            movimientos = Transaccion.objects.using('default').filter(origen__propietario__id=user.id)
+            movimientos = Transaccion.objects.filter(origen__propietario__id=user.id)
             return redirect("/movimientos")
 
     context = {
