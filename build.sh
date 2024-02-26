@@ -10,6 +10,6 @@ python manage.py collectstatic --no-input
 
 python manage.py makemigrations
 
-python manage.py migrate cuentas --database=default
-python manage.py migrate logs --database=logsdb
+python manage.py migrate --database=default
+python manage.py migrate --database=logsdb
 

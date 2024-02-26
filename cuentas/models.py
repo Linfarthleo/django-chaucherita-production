@@ -24,9 +24,6 @@ class Cuenta(models.Model):
         else:
             self.monto += monto
 
-    def __str__(self) -> str:
-        return self.nombre + ' - ' + self.propietario.username
-
 
 class Transaccion(models.Model):
     origen = models.ForeignKey(Cuenta, on_delete=models.CASCADE, related_name='cuenta_origen')
@@ -44,7 +41,4 @@ class Transaccion(models.Model):
         self.destino.save()
 
         self.save()
-
-    def __str__(self) -> str:
-        return f'{self.origen.nombre} -> {self.destino.nombre}'
 
