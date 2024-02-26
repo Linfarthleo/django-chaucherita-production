@@ -61,6 +61,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'michaucheritaweb.urls'
 
+
+
+#SESSION_COOKIE_AGE = 3600  
+
+#SESSION_TIMEOUT_REDIRECT = 'url/'  
+
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

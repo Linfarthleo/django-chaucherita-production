@@ -12,9 +12,10 @@ from logs.models import OperationLog
 @login_required
 @require_GET
 def index(request):
+
     if (len(request.GET) > 0):
         return redirect("/")
-
+    
     balance_list = [c.monto for c in
                     Cuenta.objects.using('default').filter(tipo=Cuenta.TipoCuenta.INGRESO_EGRESO,
                                                            propietario=request.user)]
@@ -33,6 +34,7 @@ def index(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def cuenta_view(request):
+    
     form = CrearCuentaForm(request.POST)
     message = ""
     op = request.GET.get("op")
@@ -40,6 +42,8 @@ def cuenta_view(request):
     if len(request.GET) > 0:
         if len(request.GET) != 1 or (not "op" in request.GET or request.GET["op"] != "crear"):
             return redirect("/cuentas")
+
+    
 
     if request.method == "POST":
         if form.is_valid():
@@ -64,7 +68,7 @@ def cuenta_view(request):
             return redirect("/cuentas")
         else:
             message = "No se pudo crear la cuenta"
-
+       
     context = {
         "form": form,
         "cuentas": Cuenta.objects.using('default').filter(propietario=request.user),
@@ -84,8 +88,7 @@ def movimiento_view(request):
     movimientos = Transaccion.objects.using('default').filter(origen__propietario__id=user.id)
 
     if len(request.GET) > 0:
-        if len(request.GET) != 1 or (
-                not "op" in request.GET or request.GET["op"] not in ["ingreso", "gasto", "traspaso"]):
+        if len(request.GET) != 1 or (not "op" in request.GET or request.GET["op"] not in ["ingreso", "gasto", "traspaso"]):
             return redirect("/movimientos")
 
     form = None
