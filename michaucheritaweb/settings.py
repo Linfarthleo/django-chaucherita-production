@@ -91,7 +91,6 @@ WSGI_APPLICATION = 'michaucheritaweb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASE_ROUTERS = ['logs.router.LogsRouter']
 
 DATABASES = {
     'default': dj_database_url.config(

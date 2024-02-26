@@ -11,7 +11,7 @@ class Cuenta(models.Model):
         INGRESO = 'I', 'Ingreso'
         GASTO = 'E', 'Gasto'
 
-    nombre = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=60)
     monto = models.FloatField(default=0.0)
     tipo = models.CharField(max_length=3, default=TipoCuenta.INGRESO_EGRESO, choices=TipoCuenta.choices)
     propietario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,6 +23,9 @@ class Cuenta(models.Model):
             self.monto -= fabs(monto)
         else:
             self.monto += monto
+
+    def __str__(self) -> str:
+        return self.nombre + ' - ' + self.propietario.username
 
 
 class Transaccion(models.Model):
@@ -41,4 +44,7 @@ class Transaccion(models.Model):
         self.destino.save()
 
         self.save()
+
+    def __str__(self) -> str:
+        return f'{self.origen.nombre} -> {self.destino.nombre}'
 

@@ -63,5 +63,3 @@ class MovimientoForm(forms.Form):
         if not isinstance(monto, (int, float)) or monto <= 0:
             raise forms.ValidationError('El monto debe ser un número mayor que cero')
         return monto
-
-   
