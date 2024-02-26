@@ -1,7 +1,7 @@
 from django.utils.html import escape
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods
 
 from .forms import CrearCuentaForm, MovimientoForm
 from .models import Cuenta, Transaccion
