@@ -16,7 +16,7 @@ class OperationLog(models.Model):
 
     user_id = models.IntegerField(default=0)  # Valor predeterminado para user_id
     user_username = models.CharField(max_length=150, default="")  # Valor predeterminado para user_username
-    operation = models.CharField(max_length=10, choices=OPERATION_CHOICES)
+    operation = models.CharField(max_length=20, choices=OPERATION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
