@@ -59,11 +59,11 @@ def cuenta_view(request):
 
             cuenta.save()
 
-            #OperationLog.objects.using('logsdb').create(
-            #    user_id=user.id,
-            #    user_username=user.username,
-            #    operation="Nueva cuenta. ID: " + str(cuenta.id)
-            #)
+            OperationLog.objects.create(
+                user_id=user.id,
+                user_username=user.username,
+                operation="Nueva cuenta. ID: " + str(cuenta.id)
+            )
 
             return redirect("/cuentas")
         else:
@@ -125,7 +125,7 @@ def movimiento_view(request):
             )
             transaccion.realizar()
 
-            OperationLog.objects.using('logsdb').create(
+            OperationLog.objects.create(
                 user_id=user.id,
                 user_username=user.username,
                 operation=f"Nueva transaccion. ID: {transaccion.id}"
